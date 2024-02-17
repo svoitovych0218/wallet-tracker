@@ -1,0 +1,8 @@
+
+{
+    "region" : "eu-central-1",
+    "profile" : "default",
+    "s3-bucket" : "dev-deployment-54534",
+    "template"  : "serverless.template",
+    "stack-name" : "dev"
+}

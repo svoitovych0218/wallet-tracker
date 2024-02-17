@@ -1,0 +1,72 @@
+{
+	"AWSTemplateFormatVersion": "2010-09-09",
+	"Transform": "AWS::Serverless-2016-10-31",
+	"Parameters": {
+		"EnvironmentName": {
+		  "Type": "String",
+		  "Description": "Entironment name"
+		}
+	},
+	"Description": "An AWS Serverless Application that uses the ASP.NET Core framework running in Amazon Lambda.",
+	"Conditions": {},
+	"Resources": {
+		"AspNetCoreFunction": {
+			"Type": "AWS::Serverless::Function",
+			"Properties": {
+				"FunctionName": {"Fn::Sub": "${AWS::StackName}-APILambda"},
+				"Handler": "Wallet.Tracker.Api::Wallet.Tracker.Api.LambdaEntryPoint::FunctionHandlerAsync",
+				"Runtime": "dotnet6",
+				"CodeUri": "s3://dev-deployment-54536/api-function-a565015d-d7a4-41c6-94bd-72475ae48e9c.zip",
+				"MemorySize": 256,
+				"Timeout": 30,
+				"Role": null,
+				"Environment": {
+				  "Variables": {
+					"CONNECTION_STRING": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/connectionString:SecretString:ConnectionString}}" },
+					"MoralisApi_ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/MoralisApi:SecretString:ApiKey}}" }
+				  }
+				},
+				"Policies": [
+					"AWSLambda_FullAccess",
+					{
+						"Statement": [
+						  {
+							"Effect": "Allow",
+							"Action": [
+							  "secretsmanager:GetSecretValue"
+							],
+							"Resource": {
+							  "Fn::Sub": "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${EnvironmentName}/*"
+							}
+						  }
+						]
+					}
+				],
+				"Events": {
+					"ProxyResource": {
+						"Type": "Api",
+						"Properties": {
+							"Path": "/{proxy+}",
+							"Method": "ANY"
+						}
+					},
+					"RootResource": {
+						"Type": "Api",
+						"Properties": {
+							"Path": "/",
+							"Method": "ANY"
+						}
+					}
+				}
+			}
+		}
+	},
+	"Outputs": {
+		"ApiURL": {
+			"Description": "API endpoint URL for Prod environment",
+			"Value": {
+				"Fn::Sub": "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+			}
+		}
+	}
+}
