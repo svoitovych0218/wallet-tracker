@@ -24,6 +24,7 @@ public class AddErc20TransferCommandHandler : IRequestHandler<AddErc20TransferCo
     {
         var allPossibleWalletIds = request.Erc20Transfers.Select(s => s.From).Union(request.Erc20Transfers.Select(s => s.To));
         var allWallets = await _dbContext.GetQuery<WalletData>().Where(s => allPossibleWalletIds.Contains(s.Address)).ToListAsync(cancellationToken);
+        
         foreach (var transfer in request.Erc20Transfers)
         {
             var walletReceiver = allWallets.FirstOrDefault(s => s.Address == transfer.To);

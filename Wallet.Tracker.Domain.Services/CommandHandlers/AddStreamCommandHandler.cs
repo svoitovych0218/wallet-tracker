@@ -35,7 +35,7 @@ public class AddStreamCommandHandler : IRequestHandler<AddStreamCommand, Unit>
             throw new CustomException("Chain was not found", 400);
         }
 
-        var wallet = new WalletData(request.Address, request.Title, DateTime.UtcNow);
+        var wallet = new WalletData(request.Address.ToLower(), request.Title, DateTime.UtcNow);
         wallet.TrackingChains.Add(new WalletChain(chain.Id, wallet.Address));
 
         var streamId = await _moralisStreamsApiClient.CreateStream(new CreateStreamRequest(request.Address, request.ChainId));

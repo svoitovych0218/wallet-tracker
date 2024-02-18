@@ -16,14 +16,14 @@
 				"FunctionName": {"Fn::Sub": "${AWS::StackName}-APILambda"},
 				"Handler": "Wallet.Tracker.Api::Wallet.Tracker.Api.LambdaEntryPoint::FunctionHandlerAsync",
 				"Runtime": "dotnet6",
-				"CodeUri": "s3://dev-deployment-54536/api-function-a565015d-d7a4-41c6-94bd-72475ae48e9c.zip",
+				"CodeUri": "s3://dev-deployment-54536/api-function-15d33c52-8edf-444d-b871-7abb008da980.zip",
 				"MemorySize": 256,
 				"Timeout": 30,
 				"Role": null,
 				"Environment": {
 				  "Variables": {
 					"CONNECTION_STRING": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/connectionString:SecretString:ConnectionString}}" },
-					"MoralisApi_ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/MoralisApi:SecretString:ApiKey}}" }
+					"MoralisApi__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/MoralisApi:SecretString:ApiKey}}" }
 				  }
 				},
 				"Policies": [

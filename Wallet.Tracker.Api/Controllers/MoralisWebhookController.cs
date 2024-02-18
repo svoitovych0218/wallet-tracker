@@ -2,6 +2,7 @@
 
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using Wallet.Tracker.Api.Controllers.RequestModels;
 using Wallet.Tracker.Domain.Services.Commands;
 using Wallet.Tracker.Domain.Services.Queries;
@@ -28,10 +29,13 @@ public class WebhookController : ControllerBase
     [HttpPost("erc-transfer")]
     public async Task<IActionResult> ErcTransferWebhook([FromBody] Erc20WebhookRequestModel request)
     {
-        if (request.ChainId == "")
+        _logger.LogInformation("Deserialized request: " + JsonConvert.SerializeObject(request));
+
+        if (request.ChainId == "" || request.Confirmed)
         {
             return Ok();
         }
+
         var command = new AddErc20TransferCommand(
             request.Confirmed,
             request.ChainId,

@@ -21,6 +21,7 @@ public class MoralisStreamsApiClient : IMoralisStreamsApiClient
         {
             BaseAddress = new Uri("https://api.moralis-streams.com/"),
         };
+        logger.LogInformation("ApiKey: " + options.Value.ApiKey);
         _httpClient.DefaultRequestHeaders.Add("X-Api-Key", options.Value.ApiKey);
         _logger = logger;
     }
@@ -53,16 +54,24 @@ public class MoralisStreamsApiClient : IMoralisStreamsApiClient
 
         var content = new StringContent(body, Encoding.UTF8, "application/json");
         var response = await _httpClient.PutAsync("/streams/evm", content);
-        _logger.LogInformation("Request to add stream sent");
+        _logger.LogInformation("Request to add stream sent. Body: " + body);
         response.EnsureSuccessStatusCode();
 
         var responseBody = await response.Content.ReadAsStringAsync();
         var apiResponse = JsonConvert.DeserializeObject<CreateStreamApiResponse>(responseBody);
 
         var addAddressRequestModel = new AddAddressToStreamApiRequest(address);
-        var addAddressContent = new StringContent(JsonConvert.SerializeObject(addAddressRequestModel), Encoding.UTF8, "application/json");
+        var addAddressRequestBody = JsonConvert.SerializeObject(addAddressRequestModel, new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            },
+            Formatting = Formatting.Indented,
+        });
+        var addAddressContent = new StringContent(addAddressRequestBody, Encoding.UTF8, "application/json");
         var addAddressResponse = await _httpClient.PostAsync($"/streams/evm/{apiResponse.Id}/address", addAddressContent);
-        _logger.LogInformation("Request to add address sent");
+        _logger.LogInformation("Request to add address sent. Body: " + addAddressRequestBody);
         addAddressResponse.EnsureSuccessStatusCode();
 
         return apiResponse.Id;

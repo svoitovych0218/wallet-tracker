@@ -32,7 +32,9 @@ public class GetTransfersQueryHandler : IRequestHandler<GetTransfersQuery, GetTr
                     TokenName = q.TokenName,
                     TransferType = q.TransferType,
                 })
-            });
+            })
+            .OrderByDescending(s => s.At);
+        
 
         var result = await query.ToListAsync(cancellationToken);
 
