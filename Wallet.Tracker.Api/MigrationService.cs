@@ -22,7 +22,7 @@ public class MigrationService : IHostedService
             {
                 // Retrieve your DbContext and apply migrations
                 var dbContext = scope.ServiceProvider.GetRequiredService<IDbContext>() as PosgresDbContext;
-                var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync();
+                var pendingMigrations = await dbContext.Database.GetPendingMigrationsAsync(cancellationToken);
                 if (pendingMigrations != null && pendingMigrations.Count() > 0)
                     await dbContext.Database.MigrateAsync(cancellationToken);
                 else

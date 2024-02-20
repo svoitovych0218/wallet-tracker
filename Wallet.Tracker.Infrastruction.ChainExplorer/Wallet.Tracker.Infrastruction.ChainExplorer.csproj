@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wallet.Tracker.Domain.Services\Wallet.Tracker.Domain.Services.csproj" />
+    <ProjectReference Include="..\Wallet.Tracker.Infrastruction.ChainExplorer.Contracts\Wallet.Tracker.Infrastruction.ChainExplorer.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

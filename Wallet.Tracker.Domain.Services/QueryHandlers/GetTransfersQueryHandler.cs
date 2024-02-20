@@ -18,19 +18,23 @@ public class GetTransfersQueryHandler : IRequestHandler<GetTransfersQuery, GetTr
     public async Task<GetTransfersQueryResult> Handle(GetTransfersQuery request, CancellationToken cancellationToken)
     {
         var query = _dbContext.GetQuery<Erc20Transaction>()
-            .GroupBy(s => new { s.WalletAddress, s.TxHash, s.At })
+            .GroupBy(s => new { s.WalletAddress, s.TxHash, s.At, s.TransactionChain.ChainId })
             .Select(s => new TransactionData
             {
                 TxHash = s.Key.TxHash,
                 WalletAddress = s.Key.WalletAddress,
                 At = s.Key.At,
+                ChainId = s.Key.ChainId,
                 Transfers = s.Select(q => new TransferData
                 {
-                    TokenSymbol = q.Symbol,
+                    TokenSymbol = q.Token.Symbol,
                     Amount = q.Amount,
-                    ContractAddress = q.ContractAddress,
-                    TokenName = q.TokenName,
+                    ContractAddress = q.Token.Address,
+                    TokenName = q.Token.Name,
                     TransferType = q.TransferType,
+                    ExistsAtCoinMarketCap = q.Token.ExistAtCoinmarketCap,
+                    ContractCodePublished = q.Token.ContractCodePublished,
+                    UsdAmount = q.UsdValue
                 })
             })
             .OrderByDescending(s => s.At);

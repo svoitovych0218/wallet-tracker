@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Nethereum.Web3" Version="4.19.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Wallet.Tracker.Domain.Services\Wallet.Tracker.Domain.Services.csproj" />
+    <ProjectReference Include="..\Wallet.Tracker.SQS.Contracts\Wallet.Tracker.SQS.Contracts.csproj" />
+  </ItemGroup>
+
+</Project>

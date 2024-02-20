@@ -20,6 +20,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Wallet.Tracker.Domain.Models\Wallet.Tracker.Domain.Models.csproj" />
     <ProjectReference Include="..\Wallet.Tracker.Domain.Models\Wallet.Tracker.Domain.Models.csproj" />
+    <ProjectReference Include="..\Wallet.Tracker.Infrastruction.ChainExplorer.Contracts\Wallet.Tracker.Infrastruction.ChainExplorer.Contracts.csproj" />
+    <ProjectReference Include="..\Wallet.Tracker.Infrastructure.CoinMarketCap.Contracts\Wallet.Tracker.Infrastructure.CoinMarketCap.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

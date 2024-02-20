@@ -1,13 +1,14 @@
 namespace Wallet.Tracker.Api;
 
+using Infrastructure.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Wallet.Tracker.Api.Services;
 using Wallet.Tracker.API.Middlewares;
 using Wallet.Tracker.Domain.Services.Extensions;
-using Infrastructure.Extensions;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-
+using Wallet.Tracker.Infrastructure.CoinMarketCap.Extensions;
+using Wallet.Tracker.Infrastruction.ChainExplorer.Extensions;
 public class Startup
 {
     public Startup(IConfiguration configuration)
@@ -34,8 +35,20 @@ public class Startup
 
         services.AddDomainServices(Configuration);
         services.AddInfrastructureServices();
+        services.AddCoinMarketCapServices(Configuration);
+        services.AddChainExplorerServices(Configuration);
+        services.AddTransient<ISqsClient, SqsClient>();
 
-        services.AddHostedService<Wallet.Tracker.Api.MigrationService>();
+        services.AddHostedService<MigrationService>();
+
+        JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            },
+            Formatting = Formatting.Indented,
+        };
 
         //services.AddAuthentication(x =>
         //{

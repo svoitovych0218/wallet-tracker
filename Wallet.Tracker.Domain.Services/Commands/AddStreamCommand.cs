@@ -4,14 +4,14 @@ using MediatR;
 
 public class AddStreamCommand : IRequest<Unit>
 {
-    public AddStreamCommand(string address, string title, string chainId)
+    public AddStreamCommand(string address, string title, string[] chainIds)
     {
         Address = address;
         Title = title;
-        ChainId = chainId;
+        ChainIds = chainIds;
     }
 
     public string Address { get; }
     public string Title { get; }
-    public string ChainId { get; }
+    public string[] ChainIds { get; }
 }

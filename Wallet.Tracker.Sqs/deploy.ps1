@@ -4,7 +4,7 @@
 )
 
 $region = "eu-central-1"
-$bucketName = "{0}-deployment-54534" -f $environment
+$bucketName = "{0}-deployment-54536" -f $environment
 $stackName = "{0}-sqs" -f $environment
 Write-Output "StackName: "+ $stackName
 

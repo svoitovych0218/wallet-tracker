@@ -13,6 +13,7 @@ public class WalletEntityTypeConfiguration : IEntityTypeConfiguration<WalletData
         builder.Property(s => s.Address).IsRequired();
         builder.Property(s => s.Title).IsRequired();
         builder.Property(s => s.CreatedAt).HasColumnType("timestamptz");
+        builder.Property(s => s.IsDeleted).HasDefaultValue(false);
 
         builder.HasMany(s => s.Erc20Transactions).WithOne().HasForeignKey(s => s.WalletAddress);
     }

@@ -36,6 +36,35 @@ namespace Wallet.Tracker.Infrastructure.Migrations
                     b.ToTable("Chain");
                 });
 
+            modelBuilder.Entity("Wallet.Tracker.Domain.Models.Entities.Erc20Token", b =>
+                {
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ChainId")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("ContractCodePublished")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("ExistAtCoinmarketCap")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Symbol")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Address", "ChainId");
+
+                    b.HasIndex("ChainId");
+
+                    b.ToTable("Erc20Token");
+                });
+
             modelBuilder.Entity("Wallet.Tracker.Domain.Models.Entities.Erc20Transaction", b =>
                 {
                     b.Property<Guid>("Id")
@@ -48,19 +77,15 @@ namespace Wallet.Tracker.Infrastructure.Migrations
                     b.Property<DateTime>("At")
                         .HasColumnType("timestamptz");
 
-                    b.Property<string>("ContractAddress")
+                    b.Property<string>("ChainId")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("NativeValue")
+                    b.Property<string>("NativeAmount")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Symbol")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("TokenName")
+                    b.Property<string>("TokenAddress")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -71,6 +96,9 @@ namespace Wallet.Tracker.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<decimal?>("UsdValue")
+                        .HasColumnType("numeric");
+
                     b.Property<string>("WalletAddress")
                         .IsRequired()
                         .HasColumnType("text");
@@ -78,6 +106,8 @@ namespace Wallet.Tracker.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("WalletAddress");
+
+                    b.HasIndex("TokenAddress", "ChainId");
 
                     b.ToTable("Erc20Transaction");
                 });
@@ -123,6 +153,11 @@ namespace Wallet.Tracker.Infrastructure.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamptz");
 
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false);
+
                     b.Property<Guid>("MoralisStreamId")
                         .HasColumnType("uuid");
 
@@ -135,6 +170,17 @@ namespace Wallet.Tracker.Infrastructure.Migrations
                     b.ToTable("WalletData");
                 });
 
+            modelBuilder.Entity("Wallet.Tracker.Domain.Models.Entities.Erc20Token", b =>
+                {
+                    b.HasOne("Wallet.Tracker.Domain.Models.Entities.Chain", "Chain")
+                        .WithMany()
+                        .HasForeignKey("ChainId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Chain");
+                });
+
             modelBuilder.Entity("Wallet.Tracker.Domain.Models.Entities.Erc20Transaction", b =>
                 {
                     b.HasOne("Wallet.Tracker.Domain.Models.Entities.WalletData", null)
@@ -142,6 +188,14 @@ namespace Wallet.Tracker.Infrastructure.Migrations
                         .HasForeignKey("WalletAddress")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Wallet.Tracker.Domain.Models.Entities.Erc20Token", "Token")
+                        .WithMany()
+                        .HasForeignKey("TokenAddress", "ChainId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Token");
                 });
 
             modelBuilder.Entity("Wallet.Tracker.Domain.Models.Entities.Erc20TransactionChain", b =>

@@ -11,6 +11,7 @@ public class WalletData
     public string Title { get; set; }
     public DateTime CreatedAt { get; set; }
     public Guid MoralisStreamId { get; set; }
+    public bool IsDeleted { get; set; }
 
     public List<WalletChain> TrackingChains { get; set; } = new List<WalletChain>();
     public List<Erc20Transaction> Erc20Transactions { get; set; } = new List<Erc20Transaction>();

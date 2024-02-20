@@ -29,20 +29,52 @@ public class AddStreamCommandHandler : IRequestHandler<AddStreamCommand, Unit>
 
     public async Task<Unit> Handle(AddStreamCommand request, CancellationToken cancellationToken)
     {
-        var chain = await _dbContext.GetQuery<Chain>().FirstOrDefaultAsync(s => s.Id == request.ChainId);
-        if (chain == null)
+        _logger.LogInformation($"{nameof(AddStreamCommandHandler)} started");
+
+        var chains = await _dbContext.GetQuery<Chain>().Where(s => request.ChainIds.Contains(s.Id)).ToListAsync(cancellationToken);
+        var notSupportedChains = request.ChainIds.Where(s => !chains.Any(q => q.Id == s));
+        
+        if (notSupportedChains.Any())
         {
-            throw new CustomException("Chain was not found", 400);
+            throw new CustomException($"Chain Ids: [{string.Join(", ", notSupportedChains)}] were not found", 400);
         }
 
-        var wallet = new WalletData(request.Address.ToLower(), request.Title, DateTime.UtcNow);
-        wallet.TrackingChains.Add(new WalletChain(chain.Id, wallet.Address));
+        var address = request.Address.ToLower();
 
-        var streamId = await _moralisStreamsApiClient.CreateStream(new CreateStreamRequest(request.Address, request.ChainId));
+        var existingWallet = await _dbContext
+            .GetQuery<WalletData>()
+            .Include(s => s.TrackingChains)
+            .FirstOrDefaultAsync(s => s.Address == address && s.IsDeleted);
+
+        if (existingWallet != null)
+        {
+            existingWallet.IsDeleted = false;
+
+            var newStreamId = await _moralisStreamsApiClient.CreateStream(new CreateStreamRequest(request.Address, request.ChainIds, request.Title));
+            existingWallet.MoralisStreamId = newStreamId;
+
+            existingWallet.TrackingChains.RemoveAll(s => !request.ChainIds.Contains(s.ChainId));
+            var chainIdsToAdd = request.ChainIds.Where(s => !existingWallet.TrackingChains.Any(q => q.ChainId == s));
+
+            if (chainIdsToAdd.Any())
+            {
+                existingWallet.TrackingChains.AddRange(chainIdsToAdd.Select(s => new WalletChain(s, existingWallet.Address)));
+            }
+
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return Unit.Value;
+        }
+
+        var wallet = new WalletData(address, request.Title, DateTime.UtcNow);
+        wallet.TrackingChains.AddRange(request.ChainIds.Select(s => new WalletChain(s, wallet.Address)));
+
+        var streamId = await _moralisStreamsApiClient.CreateStream(new CreateStreamRequest(request.Address, request.ChainIds, request.Title));
         wallet.MoralisStreamId = streamId;
 
         _dbContext.Add(wallet);
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        _logger.LogInformation($"{nameof(AddStreamCommandHandler)} finished");
 
         return Unit.Value;
     }

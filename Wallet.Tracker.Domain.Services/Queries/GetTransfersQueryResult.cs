@@ -9,12 +9,16 @@ public class TransferData
     public decimal Amount { get; set; }
     public TransferType TransferType { get; set; }
     public string ContractAddress { get; set; }
+    public bool ExistsAtCoinMarketCap { get; set; }
+    public bool ContractCodePublished { get; set; }
+    public decimal? UsdAmount { get; set; }
 }
 public class TransactionData
 {
     public string WalletAddress { get; set; }
     public string TxHash { get; set; }
     public DateTime At { get; set; }
+    public string ChainId { get; set; }
     public IEnumerable<TransferData> Transfers { get; set; }
 }
 
@@ -25,5 +29,5 @@ public class GetTransfersQueryResult
         Transactions = transactions;
     }
 
-    public IEnumerable<TransactionData> Transactions { get; }
+    public IEnumerable<TransactionData> Transactions { get; set; }
 }

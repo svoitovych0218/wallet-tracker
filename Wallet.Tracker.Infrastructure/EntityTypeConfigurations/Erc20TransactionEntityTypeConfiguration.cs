@@ -14,10 +14,12 @@ public class Erc20TransactionEntityTypeConfiguration : IEntityTypeConfiguration<
         builder.Property(s => s.WalletAddress);
         builder.Property(s => s.TransferType).HasConversion<int>();
         builder.Property(s => s.At).HasColumnType("timestamptz");
-        builder.Property(s => s.Symbol);
-        builder.Property(s => s.ContractAddress);
+        builder.Property(s => s.ChainId);
+        builder.Property(s => s.TokenAddress);
+        builder.Property(s => s.NativeAmount);
         builder.Property(s => s.Amount);
-        builder.Property(s => s.NativeValue);
-        builder.Property(s => s.TokenName);
+        builder.Property(s => s.UsdValue).IsRequired(false);
+
+        builder.HasOne(s => s.Token).WithMany().HasForeignKey(s => new { s.TokenAddress, s.ChainId });
     }
 }

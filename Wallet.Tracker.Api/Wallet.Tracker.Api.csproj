@@ -16,6 +16,7 @@
 		<PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="8.1.0" />
 		<PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.2.0" />
 		<PackageReference Include="AWS.Logger.AspNetCore" Version="3.4.1" />
+		<PackageReference Include="AWSSDK.SQS" Version="3.7.300.52" />
 		<PackageReference Include="MediatR" Version="12.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
@@ -28,10 +29,13 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Wallet.Tracker.Domain.Models\Wallet.Tracker.Domain.Models.csproj" />
+		<ProjectReference Include="..\Wallet.Tracker.Infrastruction.ChainExplorer\Wallet.Tracker.Infrastruction.ChainExplorer.csproj" />
+		<ProjectReference Include="..\Wallet.Tracker.Infrastructure.CoinMarketCap\Wallet.Tracker.Infrastructure.CoinMarketCap.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastructure\Wallet.Tracker.Infrastructure.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Domain.Models\Wallet.Tracker.Domain.Models.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Domain.Services\Wallet.Tracker.Domain.Services.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastructure\Wallet.Tracker.Infrastructure.csproj" />
+		<ProjectReference Include="..\Wallet.Tracker.SQS.Contracts\Wallet.Tracker.SQS.Contracts.csproj" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Constants\" />

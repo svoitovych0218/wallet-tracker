@@ -2,12 +2,14 @@
 
 public class CreateStreamRequest
 {
-    public CreateStreamRequest(string walletAddress, string chainId)
+    public CreateStreamRequest(string walletAddress, string[] chainIds, string title)
     {
         WalletAddress = walletAddress;
-        ChainId = chainId;
+        ChainIds = chainIds;
+        Title = title;
     }
 
     public string WalletAddress { get; }
-    public string ChainId { get; }
+    public string[] ChainIds { get; }
+    public string Title { get; }
 }

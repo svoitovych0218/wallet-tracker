@@ -28,19 +28,19 @@ public class MoralisStreamsApiClient : IMoralisStreamsApiClient
 
     public async Task<Guid> CreateStream(CreateStreamRequest request)
     {
-        var streamId = await AddStreamViaApi(request.ChainId, request.WalletAddress);
+        var streamId = await AddStreamViaApi(request.ChainIds, request.WalletAddress, request.Title);
 
         return streamId;
     }
 
-    public async Task<Guid> AddStreamViaApi(string chainId, string address)
+    public async Task<Guid> AddStreamViaApi(string[] chainIds, string address, string title)
     {
         var apiRequest = new CreateErc20TransferStreamApiRequest()
         {
             WebhookUrl = "https://7zhz455zj6.execute-api.eu-central-1.amazonaws.com/Prod/api/webhook/erc-transfer",
             Description = "ApiGenerated",
-            Tag = "CommandTest",
-            ChainIds = new string[] { chainId }
+            Tag = title,
+            ChainIds = chainIds
         };
 
         var body = JsonConvert.SerializeObject(apiRequest, new JsonSerializerSettings
@@ -75,6 +75,12 @@ public class MoralisStreamsApiClient : IMoralisStreamsApiClient
         addAddressResponse.EnsureSuccessStatusCode();
 
         return apiResponse.Id;
+    }
+
+    public async Task DeleteStream(string streamId)
+    {
+        var response = await _httpClient.DeleteAsync($"streams/evm/{streamId}");
+        response.EnsureSuccessStatusCode();
     }
 
 }

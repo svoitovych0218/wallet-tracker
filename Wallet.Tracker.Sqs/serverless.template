@@ -9,85 +9,47 @@
 		}
 	},
 	"Resources": {
-		"DeathMatchSessionEndQueue": {
+		"EvmErc20TransferQueue": {
 			"Type": "AWS::SQS::Queue",
 			"Properties": {
-				"QueueName": {"Fn::Sub": "${EnvironmentName}-death-match-session-end-queue"},
+				"QueueName": {"Fn::Sub": "${EnvironmentName}-evm-erc20-transfer-queue.fifo"},
 				"RedrivePolicy": {
-                    "deadLetterTargetArn": { "Fn::GetAtt": ["DeathMatchSessionEndDLQ", "Arn"] },
+                    "deadLetterTargetArn": { "Fn::GetAtt": ["EvmErc20TransferDLQ", "Arn"] },
                     "maxReceiveCount": "3"
-                }
+                },
+				"FifoQueue": true
 			}
 		},
-		"TeamDeathMatchSessionEndQueue": {
-			"Type": "AWS::SQS::Queue",
-			"Properties": {
-				"QueueName": {"Fn::Sub": "${EnvironmentName}-team-death-match-session-end-queue"},
-				"RedrivePolicy": {
-                    "deadLetterTargetArn": { "Fn::GetAtt": ["TeamDeathMatchSessionEndDLQ", "Arn"] },
-                    "maxReceiveCount": "3"
-                }
-			}
-		},
-		"DeathMatchSessionEndDLQ": {
+		"EvmErc20TransferDLQ": {
             "Type": "AWS::SQS::Queue",
             "Properties": {
-                "QueueName": { "Fn::Sub": "${EnvironmentName}-death-match-session-end-dl" }
+                "QueueName": { "Fn::Sub": "${EnvironmentName}-evm-erc20-transfer-dl-queue.fifo" },
+				"FifoQueue": true
             }
         },
-        "TeamDeathMatchSessionEndDLQ": {
-            "Type": "AWS::SQS::Queue",
-            "Properties": {
-                "QueueName": { "Fn::Sub": "${EnvironmentName}-team-death-match-session-end-dl" }
-            }
-        },
-		"DMKingOfTheHillSessionEndQueue": {
-			"Type": "AWS::SQS::Queue",
-			"Properties": {
-				"QueueName": {"Fn::Sub": "${EnvironmentName}-dm-king-of-the-hill-session-end-queue"},
-				"RedrivePolicy": {
-                    "deadLetterTargetArn": { "Fn::GetAtt": ["DmKingOfTheHillSessionEndDLQ", "Arn"] },
-                    "maxReceiveCount": "3"
-                }
-			}
-		},
-		"TeamDMKingOfTheHillSessionEndQueue": {
-			"Type": "AWS::SQS::Queue",
-			"Properties": {
-				"QueueName": {"Fn::Sub": "${EnvironmentName}-team-dm-king-of-the-hill-session-end-queue"},
-				"RedrivePolicy": {
-                    "deadLetterTargetArn": { "Fn::GetAtt": ["TeamDMKingOfTheHillSessionEndDLQ", "Arn"] },
-                    "maxReceiveCount": "3"
-                }
-			}
-		},
-		"DmKingOfTheHillSessionEndDLQ": {
-            "Type": "AWS::SQS::Queue",
-            "Properties": {
-                "QueueName": { "Fn::Sub": "${EnvironmentName}-dm-king-of-the-hill-session-end-dl" }
-            }
-        },
-        "TeamDMKingOfTheHillSessionEndDLQ": {
-            "Type": "AWS::SQS::Queue",
-            "Properties": {
-                "QueueName": { "Fn::Sub": "${EnvironmentName}-team-dm-king-of-the-hill-session-end-dl" }
-            }
-        },
-		"DeathMatchHandlerFunction": {
+		"EvmErc20Transfer": {
 			"Type": "AWS::Serverless::Function",
 			"Properties": {
-				"FunctionName": {"Fn::Sub": "${AWS::StackName}-DeathMatchSQSLambda"},
-				"Handler": "Wallet.Tracker.Sqs::Wallet.Tracker.Sqs.Functions.DeathMatchSessionEndFunction::Handler",
+				"FunctionName": {"Fn::Sub": "${AWS::StackName}-EvmErc20TransferSQSLambda"},
+				"Handler": "Wallet.Tracker.SQS::Wallet.Tracker.SQS.Functions.AddErc20TransferFunction::Handler",
 				"Runtime": "dotnet6",
-				"CodeUri": "s3://stage-deployment-54534/sqs-function-0d00666f-72ab-4a43-810b-12ac1c93f1af.zip",
+				"CodeUri": "s3://dev-deployment-54536/sqs-function-d03b5733-21e9-4848-ba5e-45c590a74e40.zip",
 				"MemorySize": 256,
 				"Timeout": 30,
 				"Role": null,
 				"Environment": {
 				  "Variables": {
 					"CONNECTION_STRING": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/connectionString:SecretString:ConnectionString}}" },
-					"JwtToken__JwtEncryptionKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/jwt:SecretString:JwtEncryptionKey}}" },
-				  	"SteamApi__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/SteamApi:SecretString:ApiKey}}" }
+					"MoralisApi__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/MoralisApi:SecretString:ApiKey}}" },
+					"ExplorerApiKeys__ArbitrumScanApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/ExplorerApiKeys:SecretString:ArbitrumScanApiKey}}" },
+					"ExplorerApiKeys__BscScanApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/ExplorerApiKeys:SecretString:BscScanApiKey}}" },
+					"ExplorerApiKeys__CronosScanApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/ExplorerApiKeys:SecretString:CronosScanApiKey}}" },
+					"ExplorerApiKeys__EtherScanApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/ExplorerApiKeys:SecretString:EtherScanApiKey}}" },
+					"ExplorerApiKeys__FantomScanApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/ExplorerApiKeys:SecretString:FantomScanApiKey}}" },
+					"ExplorerApiKeys__OptimismScanApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/ExplorerApiKeys:SecretString:OptimismScanApiKey}}" },
+					"ExplorerApiKeys__PolygonScanApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/ExplorerApiKeys:SecretString:PolygonScanApiKey}}" },
+					"ExplorerApiKeys__BaseScanApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/ExplorerApiKeys:SecretString:BaseScanApiKey}}" },
+					"CoinMarketCap__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/CoinMarketCap:SecretString:ApiKey}}" }
 				  }
 				},
 				"Policies": [
@@ -107,149 +69,11 @@
 					}
 				],
 				"Events": {
-					"DeathMatchSessionEndEvent": {
+					"EvmErc20TransferEvent": {
 						"Type": "SQS",
 						"Properties": {
 							"Queue": {
-								"Fn::GetAtt": ["DeathMatchSessionEndQueue", "Arn"]
-							},
-							"FunctionResponseTypes": ["ReportBatchItemFailures"]
-						}
-					}
-				}
-			}
-		},
-		"TeamDeathMatchHandlerFunction": {
-			"Type": "AWS::Serverless::Function",
-			"Properties": {
-				"FunctionName": {"Fn::Sub": "${AWS::StackName}-TeamDeathMatchSQSLambda"},
-				"Handler": "Wallet.Tracker.Sqs::Wallet.Tracker.Sqs.Functions.TeamDeathMatchSessionEndFunction::Handler",
-				"Runtime": "dotnet6",
-				"CodeUri": "s3://stage-deployment-54534/sqs-function-0d00666f-72ab-4a43-810b-12ac1c93f1af.zip",
-				"MemorySize": 256,
-				"Timeout": 30,
-				"Role": null,
-				"Environment": {
-				  "Variables": {
-					"CONNECTION_STRING": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/connectionString:SecretString:ConnectionString}}" },
-					"JwtToken__JwtEncryptionKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/jwt:SecretString:JwtEncryptionKey}}" },
-				  	"SteamApi__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/SteamApi:SecretString:ApiKey}}" }
-				  }
-				},
-				"Policies": [
-					"AWSLambda_FullAccess",
-					{
-						"Statement": [
-						  {
-							"Effect": "Allow",
-							"Action": [
-							  "ssm:GetParameter"
-							],
-							"Resource": {
-							  "Fn::Sub": "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${EnvironmentName}/*"
-							}
-						  }
-						]
-					}
-				],
-				"Events": {
-					"TeamDeathMatchSessionEndEvent": {
-						"Type": "SQS",
-						"Properties": {
-							"Queue": {
-								"Fn::GetAtt": ["TeamDeathMatchSessionEndQueue", "Arn"]
-							},
-							"FunctionResponseTypes": ["ReportBatchItemFailures"]
-						}
-					}
-				}
-			}
-		},
-		"DMKingOfTheHillHandlerFunction": {
-			"Type": "AWS::Serverless::Function",
-			"Properties": {
-				"FunctionName": {"Fn::Sub": "${AWS::StackName}-DmKingOfTheHillSQSLambda"},
-				"Handler": "Wallet.Tracker.Sqs::Wallet.Tracker.Sqs.Functions.DMKingOfTheHillSessionEndFunction::Handler",
-				"Runtime": "dotnet6",
-				"CodeUri": "s3://stage-deployment-54534/sqs-function-0d00666f-72ab-4a43-810b-12ac1c93f1af.zip",
-				"MemorySize": 256,
-				"Timeout": 30,
-				"Role": null,
-				"Environment": {
-				  "Variables": {
-					"CONNECTION_STRING": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/connectionString:SecretString:ConnectionString}}" },
-					"JwtToken__JwtEncryptionKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/jwt:SecretString:JwtEncryptionKey}}" },
-				  	"SteamApi__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/SteamApi:SecretString:ApiKey}}" }
-				  }
-				},
-				"Policies": [
-					"AWSLambda_FullAccess",
-					{
-						"Statement": [
-						  {
-							"Effect": "Allow",
-							"Action": [
-							  "ssm:GetParameter"
-							],
-							"Resource": {
-							  "Fn::Sub": "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${EnvironmentName}/*"
-							}
-						  }
-						]
-					}
-				],
-				"Events": {
-					"DMKingOfTheHillSessionEndEvent": {
-						"Type": "SQS",
-						"Properties": {
-							"Queue": {
-								"Fn::GetAtt": ["DMKingOfTheHillSessionEndQueue", "Arn"]
-							},
-							"FunctionResponseTypes": ["ReportBatchItemFailures"]
-						}
-					}
-				}
-			}
-		},
-		"TeamDMKingOfTheHillHandlerFunction": {
-			"Type": "AWS::Serverless::Function",
-			"Properties": {
-				"FunctionName": {"Fn::Sub": "${AWS::StackName}-TeamDMKingOfTheHillSQSLambda"},
-				"Handler": "Wallet.Tracker.Sqs::Wallet.Tracker.Sqs.Functions.TeamDMKingOfTheHillSessionEndFunction::Handler",
-				"Runtime": "dotnet6",
-				"CodeUri": "s3://stage-deployment-54534/sqs-function-0d00666f-72ab-4a43-810b-12ac1c93f1af.zip",
-				"MemorySize": 256,
-				"Timeout": 30,
-				"Role": null,
-				"Environment": {
-				  "Variables": {
-					"CONNECTION_STRING": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/connectionString:SecretString:ConnectionString}}" },
-					"JwtToken__JwtEncryptionKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/jwt:SecretString:JwtEncryptionKey}}" },
-				  	"SteamApi__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/SteamApi:SecretString:ApiKey}}" }
-				  }
-				},
-				"Policies": [
-					"AWSLambda_FullAccess",
-					{
-						"Statement": [
-						  {
-							"Effect": "Allow",
-							"Action": [
-							  "ssm:GetParameter"
-							],
-							"Resource": {
-							  "Fn::Sub": "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:${EnvironmentName}/*"
-							}
-						  }
-						]
-					}
-				],
-				"Events": {
-					"TeamDeathMatchSessionEndEvent": {
-						"Type": "SQS",
-						"Properties": {
-							"Queue": {
-								"Fn::GetAtt": ["TeamDMKingOfTheHillSessionEndQueue", "Arn"]
+								"Fn::GetAtt": ["EvmErc20TransferQueue", "Arn"]
 							},
 							"FunctionResponseTypes": ["ReportBatchItemFailures"]
 						}

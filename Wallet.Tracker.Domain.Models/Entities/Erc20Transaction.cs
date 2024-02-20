@@ -10,22 +10,22 @@ public class Erc20Transaction
         string txHash,
         DateTime at,
         TransferType transferType,
-        string symbol,
-        string tokenName,
-        string nativeValue,
-        string contractAddress,
-        decimal amount)
+        string chainId,
+        string tokenAddress,
+        string nativeAmount,
+        decimal amount,
+        decimal? usdValue)
     {
         Id = id;
         WalletAddress = walletAddress;
         TxHash = txHash;
         At = at;
         TransferType = transferType;
-        Symbol = symbol;
-        TokenName = tokenName;
-        NativeValue = nativeValue;
-        ContractAddress = contractAddress;
+        ChainId = chainId;
+        TokenAddress = tokenAddress;
+        NativeAmount = nativeAmount;
         Amount = amount;
+        UsdValue = usdValue;
     }
 
     public Guid Id { get; set; }
@@ -33,11 +33,11 @@ public class Erc20Transaction
     public string TxHash { get; set; }
     public DateTime At { get; set; }
     public TransferType TransferType { get; set; }
-    public string Symbol { get; set; }
-    public string TokenName { get; set; }
-    public string NativeValue { get; set; }
-    public string ContractAddress { get; set; }
+    public string ChainId { get; set; }
+    public string TokenAddress { get; set; }
+    public string NativeAmount { get; set; }
     public decimal Amount { get; set; }
-    
+    public decimal? UsdValue { get; set; }
     public Erc20TransactionChain TransactionChain { get; set; }
+    public Erc20Token Token { get; set; }
 }

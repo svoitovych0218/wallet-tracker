@@ -5,6 +5,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Wallet.Tracker.Infrastructure.Extensions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using Wallet.Tracker.Infrastructure.CoinMarketCap.Extensions;
+using Wallet.Tracker.Infrastruction.ChainExplorer.Extensions;
 
 public static class Startup
 {
@@ -25,6 +29,18 @@ public static class Startup
 
         services.AddDomainServices(configuration);
         services.AddInfrastructureServices();
+        services.AddCoinMarketCapServices(configuration);
+        services.AddChainExplorerServices(configuration);
+
+        JsonConvert.DefaultSettings = () => new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new CamelCaseNamingStrategy()
+            },
+            Formatting = Formatting.Indented,
+        };
+
         return services;
     }
 

@@ -4,26 +4,31 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Wallet.Tracker.Api.Controllers.RequestModels;
-using Wallet.Tracker.Domain.Services.Commands;
-using Wallet.Tracker.Domain.Services.Queries;
+using Wallet.Tracker.Api.Services;
+using Wallet.Tracker.SQS.Contracts;
 
 [Route("api/webhook")]
 public class WebhookController : ControllerBase
 {
     private readonly IMediator _mediator;
     private readonly ILogger<WebhookController> _logger;
+    private readonly ISqsClient _sqsClient;
 
-    public WebhookController(IMediator mediator, ILogger<WebhookController> logger)
+    public WebhookController(
+        IMediator mediator,
+        ILogger<WebhookController> logger,
+        ISqsClient sqsClient)
     {
         _mediator = mediator;
         _logger = logger;
+        _sqsClient = sqsClient;
     }
 
     [HttpGet("test")]
     public async Task<IActionResult> Test()
     {
-        var res = await _mediator.Send(new GetStreamsQuery());
-        return Ok(res);
+        //await _sqsClient.SendErc20TransferMessage(null);
+        return Ok();
     }
 
     [HttpPost("erc-transfer")]
@@ -36,24 +41,26 @@ public class WebhookController : ControllerBase
             return Ok();
         }
 
-        var command = new AddErc20TransferCommand(
-            request.Confirmed,
-            request.ChainId,
-            new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(int.Parse(request.Block.Timestamp)),
-            request.Erc20Transfers.Select(s => new Erc20TransferModel(
-                s.TransactionHash,
-                s.Contract,
-                s.From,
-                s.To,
-                s.Value,
-                s.TokenName,
-                s.TokenSymbol,
-                int.Parse(s.TokenDecimals),
-                decimal.Parse(s.ValueWithDecimals),
-                s.PossibleSpam
-                )));
-
-        await _mediator.Send(command);
+        var message = new AddErc20TransferSqsMessage
+        {
+            Confirmed = request.Confirmed,
+            ChainId = request.ChainId,
+            At = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddSeconds(int.Parse(request.Block.Timestamp)),
+            Erc20Transfers = request.Erc20Transfers.Select(s => new Erc20TransferSqsModel
+            {
+                TransactionHash = s.TransactionHash,
+                Contract = s.Contract,
+                From = s.From,
+                To = s.To,
+                Value = s.Value,
+                TokenName = s.TokenName,
+                TokenSymbol = s.TokenSymbol,
+                TokenDecimals = int.Parse(s.TokenDecimals),
+                ValueWithDecimals = decimal.Parse(s.ValueWithDecimals),
+                PossibleSpam = s.PossibleSpam
+            })
+        };
+        await _sqsClient.SendErc20TransferMessage(message);
         return Ok();
     }
 }
