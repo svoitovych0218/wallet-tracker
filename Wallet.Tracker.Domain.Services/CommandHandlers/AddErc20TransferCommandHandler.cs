@@ -15,23 +15,27 @@ public class AddErc20TransferCommandHandler : IRequestHandler<AddErc20TransferCo
     private readonly IDbContext _dbContext;
     private readonly ICoinMerketCapApiClient _coinMerketCapApiClient;
     private readonly IChainExplorerApiClientFactory _chainExplorerApiClientFactory;
+    private readonly ITelegramBotNotificationService _telegramBotNotificationService;
     private readonly ILogger<AddErc20TransferCommandHandler> _logger;
 
     public AddErc20TransferCommandHandler(
         IDbContext dbContext,
         ICoinMerketCapApiClient coinMerketCapApiClient,
         IChainExplorerApiClientFactory chainExplorerApiClientFactory,
+        ITelegramBotNotificationService telegramBotNotificationService,
         ILogger<AddErc20TransferCommandHandler> logger)
     {
         _dbContext = dbContext;
         _coinMerketCapApiClient = coinMerketCapApiClient;
         _chainExplorerApiClientFactory = chainExplorerApiClientFactory;
+        _telegramBotNotificationService = telegramBotNotificationService;
         _logger = logger;
     }
     public async Task<Unit> Handle(AddErc20TransferCommand request, CancellationToken cancellationToken)
     {
         var allPossibleWalletIds = request.Erc20Transfers.Select(s => s.From).Union(request.Erc20Transfers.Select(s => s.To));
         var allWallets = await _dbContext.GetQuery<WalletData>().Where(s => allPossibleWalletIds.Contains(s.Address)).ToListAsync(cancellationToken);
+        List<Erc20Transaction> transactions = new List<Erc20Transaction>();
 
         foreach (var transfer in request.Erc20Transfers)
         {
@@ -50,6 +54,7 @@ public class AddErc20TransferCommandHandler : IRequestHandler<AddErc20TransferCo
             {
                 var tx = CreateErc20Transaction(request, transfer, cmcInfo.CurrentPriceUsd * transfer.ValueWithDecimals, TransferType.In);
                 _dbContext.Add(tx);
+                transactions.Add(tx);
             }
 
             var walletSender = allWallets.FirstOrDefault(s => s.Address == transfer.From);
@@ -57,11 +62,31 @@ public class AddErc20TransferCommandHandler : IRequestHandler<AddErc20TransferCo
             {
                 var tx = CreateErc20Transaction(request, transfer, cmcInfo.CurrentPriceUsd * transfer.ValueWithDecimals, TransferType.Out);
                 _dbContext.Add(tx);
+                transactions.Add(tx);
             }
         }
 
         await _dbContext.SaveChangesAsync(cancellationToken);
+        await SendTelegramNotification(request, cancellationToken);
         return Unit.Value;
+    }
+
+    private async Task SendTelegramNotification(AddErc20TransferCommand request, CancellationToken cancellationToken)
+    {
+        var telegramUserIds = await _dbContext.GetQuery<TelegramUser>()
+                    .Select(s => s.Id)
+                    .ToListAsync(cancellationToken);
+
+        var txHashes = request.Erc20Transfers.Select(s => s.TransactionHash).Distinct();
+
+        var transactions = await _dbContext.GetQuery<Erc20Transaction>()
+            .Where(s => txHashes.Contains(s.TxHash))
+            .Include(s => s.TransactionChain)
+            .ThenInclude(s => s.Chain)
+            .Include(s => s.Token)
+            .ToListAsync(cancellationToken);
+
+        await _telegramBotNotificationService.SendTransactionAlert(telegramUserIds, transactions);
     }
 
     private async Task<Erc20Token> CreateErc20Token(AddErc20TransferCommand request, Erc20TransferModel transfer, string tokenAddress, bool isExistsAtCoinMarketCap)

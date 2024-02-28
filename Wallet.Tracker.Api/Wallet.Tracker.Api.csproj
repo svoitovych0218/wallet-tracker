@@ -19,6 +19,7 @@
 		<PackageReference Include="AWSSDK.SQS" Version="3.7.300.52" />
 		<PackageReference Include="MediatR" Version="12.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.25" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="6.0.27" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.11">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -26,11 +27,13 @@
 		<PackageReference Include="Microsoft.IdentityModel.Tokens" Version="6.35.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
 		<PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.35.0" />
+		<PackageReference Include="Telegram.Bot" Version="19.0.0" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Wallet.Tracker.Domain.Models\Wallet.Tracker.Domain.Models.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastruction.ChainExplorer\Wallet.Tracker.Infrastruction.ChainExplorer.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastructure.CoinMarketCap\Wallet.Tracker.Infrastructure.CoinMarketCap.csproj" />
+		<ProjectReference Include="..\Wallet.Tracker.Infrastructure.Telegram\Wallet.Tracker.Infrastructure.Telegram.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastructure\Wallet.Tracker.Infrastructure.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Domain.Models\Wallet.Tracker.Domain.Models.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Domain.Services\Wallet.Tracker.Domain.Services.csproj" />

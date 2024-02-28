@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Wallet.Tracker.Infrastructure.CoinMarketCap.Extensions;
 using Wallet.Tracker.Infrastruction.ChainExplorer.Extensions;
+using Wallet.Tracker.Infrastructure.Telegram.Extensions;
 
 public static class Startup
 {
@@ -31,6 +32,7 @@ public static class Startup
         services.AddInfrastructureServices();
         services.AddCoinMarketCapServices(configuration);
         services.AddChainExplorerServices(configuration);
+        services.AddTelegramBotServices(configuration);
 
         JsonConvert.DefaultSettings = () => new JsonSerializerSettings
         {

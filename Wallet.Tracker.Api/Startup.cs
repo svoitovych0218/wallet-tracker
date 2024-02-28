@@ -9,6 +9,8 @@ using Wallet.Tracker.API.Middlewares;
 using Wallet.Tracker.Domain.Services.Extensions;
 using Wallet.Tracker.Infrastructure.CoinMarketCap.Extensions;
 using Wallet.Tracker.Infrastruction.ChainExplorer.Extensions;
+using Wallet.Tracker.Infrastructure.Telegram.Extensions;
+
 public class Startup
 {
     public Startup(IConfiguration configuration)
@@ -31,12 +33,14 @@ public class Startup
 
         services.AddLogging(s => s.AddAWSProvider().Configure(s => s.ActivityTrackingOptions = ActivityTrackingOptions.TraceId | ActivityTrackingOptions.SpanId));
 
-        services.AddControllers();
+        services.AddControllers().AddNewtonsoftJson();
 
         services.AddDomainServices(Configuration);
         services.AddInfrastructureServices();
         services.AddCoinMarketCapServices(Configuration);
         services.AddChainExplorerServices(Configuration);
+        services.AddTelegramBotServices(Configuration);
+
         services.AddTransient<ISqsClient, SqsClient>();
 
         services.AddHostedService<MigrationService>();
@@ -49,28 +53,8 @@ public class Startup
             },
             Formatting = Formatting.Indented,
         };
-
-        //services.AddAuthentication(x =>
-        //{
-        //    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-        //    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-        //})
-        //.AddJwtBearer(options =>
-        //{
-        //    options.TokenValidationParameters = new TokenValidationParameters
-        //    {
-        //        ValidateIssuer = true,
-        //        ValidateAudience = true,
-        //        ValidateLifetime = true,
-        //        ValidateIssuerSigningKey = true,
-        //        ValidIssuer = "Wallet",
-        //        ValidAudience = "Wallet",
-        //        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetValue<string>("JwtToken:JwtEncryptionKey")))
-        //    };
-        //});
     }
 
-    // This method gets called by the runtime. Use this method to configure the HTTP request pipeline
     public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
     {
         if (env.IsDevelopment())
@@ -86,9 +70,6 @@ public class Startup
         app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         app.UseCors("CorsPolicy");
-
-        //app.UseAuthentication();
-        //app.UseAuthorization();
 
         app.UseEndpoints(endpoints =>
         {

@@ -46,6 +46,7 @@
 		<ProjectReference Include="..\Wallet.Tracker.Domain.Services\Wallet.Tracker.Domain.Services.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastruction.ChainExplorer\Wallet.Tracker.Infrastruction.ChainExplorer.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastructure.CoinMarketCap\Wallet.Tracker.Infrastructure.CoinMarketCap.csproj" />
+		<ProjectReference Include="..\Wallet.Tracker.Infrastructure.Telegram\Wallet.Tracker.Infrastructure.Telegram.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastructure\Wallet.Tracker.Infrastructure.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Domain.Services\Wallet.Tracker.Domain.Services.csproj" />
 		<ProjectReference Include="..\Wallet.Tracker.Infrastructure\Wallet.Tracker.Infrastructure.csproj" />

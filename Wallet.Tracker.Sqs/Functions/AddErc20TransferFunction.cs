@@ -16,7 +16,10 @@ public class AddErc20TransferFunction : SqsEventHandlerBase<AddErc20TransferSqsM
     {
     }
 
-    public override async Task ProcessSqsMessage(AddErc20TransferSqsMessage message, ILambdaContext lambdaContext, IServiceProvider serviceProvider)
+    public override async Task ProcessSqsMessage(
+        AddErc20TransferSqsMessage message,
+        ILambdaContext lambdaContext,
+        IServiceProvider serviceProvider)
     {
         var logger = serviceProvider.GetRequiredService<ILogger<AddErc20TransferFunction>>();
         logger.LogInformation($"{nameof(AddErc20TransferFunction)} {nameof(ProcessSqsMessage)} started");

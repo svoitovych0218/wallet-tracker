@@ -16,7 +16,7 @@
 				"FunctionName": {"Fn::Sub": "${AWS::StackName}-APILambda"},
 				"Handler": "Wallet.Tracker.Api::Wallet.Tracker.Api.LambdaEntryPoint::FunctionHandlerAsync",
 				"Runtime": "dotnet6",
-				"CodeUri": "s3://dev-deployment-54536/api-function-c3aca0d6-d009-4e87-8522-1f831efb884e.zip",
+				"CodeUri": "s3://dev-deployment-54536/api-function-27738e8d-9a00-4416-844e-5fba74ca936e.zip",
 				"MemorySize": 256,
 				"Timeout": 30,
 				"Role": null,
@@ -24,6 +24,7 @@
 				  "Variables": {
 					"CONNECTION_STRING": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/connectionString:SecretString:ConnectionString}}" },
 					"MoralisApi__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/MoralisApi:SecretString:ApiKey}}" },
+					"TelegramBot__ApiKey": { "Fn::Sub": "{{resolve:secretsmanager:${EnvironmentName}/TelegramBot:SecretString:ApiKey}}" },
 					"CurrentEnvironment": { "Fn::Sub": "${EnvironmentName}" },
 					"AWSAccountId": { "Fn::Sub": "${AWS::AccountId}" },
 					"Region": { "Fn::Sub": "${AWS::Region}" }

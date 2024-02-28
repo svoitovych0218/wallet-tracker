@@ -13,15 +13,17 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wallet.Tracker.Domain.Servi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wallet.Tracker.SQS", "Wallet.Tracker.Sqs\Wallet.Tracker.SQS.csproj", "{E184DA4E-B889-42DF-9195-AE6A60A04B80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.Tracker.SQS.Contracts", "Wallet.Tracker.SQS.Contracts\Wallet.Tracker.SQS.Contracts.csproj", "{06319466-D8E5-404E-B70B-BC99AA1BEE70}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wallet.Tracker.SQS.Contracts", "Wallet.Tracker.SQS.Contracts\Wallet.Tracker.SQS.Contracts.csproj", "{06319466-D8E5-404E-B70B-BC99AA1BEE70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.Tracker.Infrastructure.CoinMarketCap", "Wallet.Tracker.Infrastructure.CoinMarketCap\Wallet.Tracker.Infrastructure.CoinMarketCap.csproj", "{EAD1E09F-D816-49BE-8BAB-CF95D4B206E8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wallet.Tracker.Infrastructure.CoinMarketCap", "Wallet.Tracker.Infrastructure.CoinMarketCap\Wallet.Tracker.Infrastructure.CoinMarketCap.csproj", "{EAD1E09F-D816-49BE-8BAB-CF95D4B206E8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.Tracker.Infrastructure.CoinMarketCap.Contracts", "Wallet.Tracker.Infrastructure.CoinMarketCap.Contracts\Wallet.Tracker.Infrastructure.CoinMarketCap.Contracts.csproj", "{DE0F8136-216A-47EA-8626-236B9F603FB3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wallet.Tracker.Infrastructure.CoinMarketCap.Contracts", "Wallet.Tracker.Infrastructure.CoinMarketCap.Contracts\Wallet.Tracker.Infrastructure.CoinMarketCap.Contracts.csproj", "{DE0F8136-216A-47EA-8626-236B9F603FB3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.Tracker.Infrastruction.ChainExplorer", "Wallet.Tracker.Infrastruction.ChainExplorer\Wallet.Tracker.Infrastruction.ChainExplorer.csproj", "{BE9B2A9B-6681-4E1C-85E3-CC1C9859C8B7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wallet.Tracker.Infrastruction.ChainExplorer", "Wallet.Tracker.Infrastruction.ChainExplorer\Wallet.Tracker.Infrastruction.ChainExplorer.csproj", "{BE9B2A9B-6681-4E1C-85E3-CC1C9859C8B7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.Tracker.Infrastruction.ChainExplorer.Contracts", "Wallet.Tracker.Infrastruction.ChainExplorer.Contracts\Wallet.Tracker.Infrastruction.ChainExplorer.Contracts.csproj", "{096E01EB-170D-4F63-B50A-B082AD858866}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wallet.Tracker.Infrastruction.ChainExplorer.Contracts", "Wallet.Tracker.Infrastruction.ChainExplorer.Contracts\Wallet.Tracker.Infrastruction.ChainExplorer.Contracts.csproj", "{096E01EB-170D-4F63-B50A-B082AD858866}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wallet.Tracker.Infrastructure.Telegram", "Wallet.Tracker.Infrastructure.Telegram\Wallet.Tracker.Infrastructure.Telegram.csproj", "{CB58D898-06B2-4E2B-B34D-8942E5F2CA4C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -69,6 +71,10 @@ Global
 		{096E01EB-170D-4F63-B50A-B082AD858866}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{096E01EB-170D-4F63-B50A-B082AD858866}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{096E01EB-170D-4F63-B50A-B082AD858866}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB58D898-06B2-4E2B-B34D-8942E5F2CA4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB58D898-06B2-4E2B-B34D-8942E5F2CA4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB58D898-06B2-4E2B-B34D-8942E5F2CA4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB58D898-06B2-4E2B-B34D-8942E5F2CA4C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
